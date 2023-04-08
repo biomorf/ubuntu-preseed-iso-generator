@@ -1,5 +1,6 @@
 # Ubuntu Preseed ISO Generator
-Generate an ISO image for automated Ubuntu 20.04 desktop installations. This script uses the traditional preseed method.
+
+Generate an ISO image for automated Ubuntu 20.04/Focal or 22.04/Jammy desktop installations. This script uses the traditional preseed method.
 
 ## [Looking for the server version?](https://github.com/covertsh/ubuntu-autoinstall-generator)
 
@@ -18,12 +19,17 @@ Tested on a host running Ubuntu 20.04.1.
 - Utilities required:
     - ```p7zip-full```
     - ```mkisofs``` or ```genisoimage```
+    - ```isolinux```
+
+```shell
+sudo apt-get install -y p7zip-full mkisofs genisoimage xorriso isolinux syslinux-common
+```
 
 ### Usage
 ```
 Usage: ubuntu-preseed-iso-generator.sh [-h] [-k] [-v] [-p preseed-configuration-file] [-s source-iso-file] [-d destination-iso-file]
 
-💁 This script will create fully-automated Ubuntu 20.04 Focal Fossa installation media.
+💁 This script will create fully-automated Ubuntu Desktop installation media.
 
 Available options:
 
@@ -43,6 +49,9 @@ Available options:
 ```
 
 ### Example
+
+```shell
+ bash ubuntu-preseed-iso-generator.sh -p example.seed -d ubuntu-desk-20-auto.iso
 ```
 user@testbox:~$ bash ubuntu-preseed-iso-generator.sh -p example.seed -d ubuntu-preseed-example.iso
 [2021-03-13 10:05:10] 👶 Starting up...
@@ -71,10 +80,30 @@ user@testbox:~$ bash ubuntu-preseed-iso-generator.sh -p example.seed -d ubuntu-p
 ```
 
 Now you can boot your target machine using ```ubuntu-preseed-example.iso``` and it will automatically install Ubuntu using the configuration from ```example.seed```.
+Now you can boot your target machine using ```ubuntu-desk-20-auto.iso``` and it will automatically install Ubuntu using the configuration from ```example.seed```.
+
+#### copying
+
+To copy your ISO to a USB key:
+
+```shell
+# find the device
+lsblk
+lsusb
+sudo dmesg
+# unmount the usb dev with ONE of these two commands:
+sudo umount /media/user/data
+sudo umount /dev/sdb
+# copy iso to USB
+sudo dd if=~/ubuntu-auto.iso of=/dev/sdb bs=1M status=progress && sync
+```
+
+Remove the USB key and place into new machine to install on.
 
 ### Thanks
 This script is based on [this](https://betterdev.blog/minimal-safe-bash-script-template/) minimal safe bash template, and steps found in [this](https://askubuntu.com/questions/806820/how-do-i-create-a-completely-unattended-install-of-ubuntu-desktop-16-04-1-lts) Ask Ubuntu answer.
 
+Fork from: https://github.com/covertsh/ubuntu-preseed-iso-generator
 
 ### License
 MIT license.

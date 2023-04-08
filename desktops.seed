@@ -1,9 +1,8 @@
 # Ubuntu seed install data
-# Based on https://askubuntu.com/questions/806820/how-do-i-create-a-completely-unattended-install-of-ubuntu-desktop-16-04-1-lts
 # https://wiki.ubuntu.com/UbiquityAutomation
 
 # Partitioning
-ubiquity partman-auto/disk string /dev/vda
+ubiquity partman-auto/disk string /dev/sda
 ubiquity partman-auto/method string regular
 ubiquity partman-lvm/device_remove_lvm boolean true
 ubiquity partman-md/device_remove_md boolean true
@@ -17,7 +16,7 @@ d-i partman/confirm_nooverwrite boolean true
 
 # Locale
 d-i keyboard-configuration/layoutcode select us
-d-i debian-installer/locale string en_US
+d-i debian-installer/locale string en_AU
 d-i console-setup/ask_detect boolean false
 d-i console-setup/layoutcode string us
 
@@ -33,17 +32,16 @@ d-i time/zone string UTC
 d-i clock-setup/ntp boolean true
 
 # Packages, Mirrors, Image
-d-i mirror/country string US
+d-i mirror/country string AU
 d-i apt-setup/multiverse boolean true
 d-i apt-setup/restricted boolean true
 d-i apt-setup/universe boolean true
 
 # Users
-d-i passwd/user-fullname string Default User
-d-i passwd/username string user
-# Password: ubuntu
-# Generate with "openssl passwd -6"
-d-i passwd/user-password-crypted password $6$eRzcYyR3Xw2elP6l$l7JXHXxbXRgD8KCx4xFt4q7aJFpsUfjjMHbfYZAlJ56GLSspojJ6ODxlauuauL72jYbwhEhGwUmzgImIVCFle0
+d-i passwd/user-fullname string defaultuser
+d-i passwd/username string defaultuser
+# Password: T3mp.P4ss
+d-i passwd/user-password-crypted password $6$rounds=1280000$.MvQs/lOvlZ.cAdq$I5b.OpFzFWWwAG/bgQ.zZOy1g1.F/cHvf/mNNI8e5.KMKI4sSVNGyMEFVZ1Mmlq8lULkeHTeyJsqaUjcpuAOb/
 d-i passwd/user-default-groups string adm audio cdrom dip lpadmin sudo plugdev sambashare video
 d-i passwd/root-login boolean false
 d-i user-setup/allow-password-weak boolean false
@@ -57,10 +55,13 @@ d-i finish-install/reboot_in_progress note
 ubiquity ubiquity/success_command string \
   in-target apt update;\
   in-target apt remove -y gnome-initial-setup;\
-  in-target apt install -y open-vm-tools vim tmux git curl wget htop build-essential tasksel python3-dev python3-venv python3-pip software-properties-common
+  in-target apt install -y vim tmux git curl wget htop build-essential tasksel python3-dev python3-venv python3-pip software-properties-common;\
+  in-target apt install -y kubuntu-desktop ubuntu-desktop;\
+  in-target mkdir -pv /etc/opt/img/;\
+  in-target touch -f /etc/opt/img/.finished.txt
 
 # Poweroff after install
-#ubiquity ubiquity/poweroff boolean true
+ubiquity ubiquity/poweroff boolean true
 
 # Reboot after install
-ubiquity ubiquity/reboot boolean true
+#ubiquity ubiquity/reboot boolean true
